@@ -1,6 +1,6 @@
 {
   "name": "rn-ekghanti-livechat-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "src/index.ts",
   "scripts": {
@@ -11,6 +11,7 @@
     "react-native": "0.74.3",
     "react-native-webview": "^13.10.5"
   },
+  "files": ["src/**/*", "!examples/**/*"],
   "author": "Janak bastakoti",
   "license": "ISC",
   "packageManager": "yarn@3.6.4"
