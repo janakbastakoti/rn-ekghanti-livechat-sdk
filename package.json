@@ -12,5 +12,6 @@
     "react-native-webview": "^13.10.5"
   },
   "author": "Janak bastakoti",
-  "license": "ISC"
+  "license": "ISC",
+  "packageManager": "yarn@3.6.4"
 }
