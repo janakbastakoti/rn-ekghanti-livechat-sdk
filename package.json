@@ -1,6 +1,6 @@
 {
   "name": "rn-ekghanti-livechat-sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "src/index.ts",
   "scripts": {
@@ -9,7 +9,10 @@
   "peerDependencies": {
     "react": "18.2.0",
     "react-native": "0.74.3",
-    "react-native-webview": "^13.10.5"
+    "react-native-webview": "^13.10.5",
+    "react-native-use-websocket": "^0.2.6",
+    "socket.io-client": "^4.7.5"
+
   },
   "files": ["src/**/*", "!examples/**/*"],
   "author": "Janak bastakoti",
