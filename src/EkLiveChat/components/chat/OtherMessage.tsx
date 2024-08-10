@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   msgContainer: {
     alignItems: 'flex-end',
     maxWidth: '84%',
+    marginVertical: 3,
   },
   ProifleImg: {
     height: 20,

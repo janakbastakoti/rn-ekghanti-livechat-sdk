@@ -18,29 +18,8 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
 
   const handleSend = () => {
     if (message) {
-      handleSendMsg({
-        channelID: 'fd0caaa3-f1cb-4d0a-a452-171f21ec16ee'+ Math.random(),
-        chatMessage: {
-          chatSide: 'incoming',
-          displayType: 'text',
-          message: message,
-        },
-        destinationInfo: {
-          entityType: 'chatServer',
-          userInfo: null,
-        },
-        instanceId: '080fe801-bb89-4331-95bf-5bc4e73525b8',
-        messageId: '73d2454d-0b73-4937-ba8b-d2b20b7172d7',
-        sourceInfo: {
-          entityType: 'client',
-          userInfo: {
-            ipAddress: '202.51.80.194',
-            user_name: null,
-            usernameCookie: 'f03be31a66f5',
-          },
-        },
-      });
-      setMessage('')
+      handleSendMsg(message);
+      setMessage('');
     }
   };
 
@@ -102,7 +81,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     alignSelf: 'flex-end',
     marginBottom: 3,
-    // backgroundColor: 'green'
   },
   container: {
     paddingHorizontal: 7,
