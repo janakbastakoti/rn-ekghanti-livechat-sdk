@@ -1,11 +1,7 @@
 import React from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {Block, Text} from '../element';
-import { timeAgo } from '../../helper';
-// import {Block, Text} from '../../../../../elements';
-// import {theme} from '../../../../../../utils/theme';
-// import CommonIcon from '../../../../../../assets/icons/common/CommonIcon';
-// import { timeAgo } from '../../../../../../utils/helper';
+import {timeAgo} from '../../helper';
 
 interface Props {
   message?: string;
@@ -23,29 +19,18 @@ const MyMessage: React.FC<Props> = ({
   return (
     <Block style={styles.msgContainer} flex="disabled" row gap={5}>
       <Block style={styles.msgContent} flex="disabled">
-        <Text
-          font="Regular"
-          size={16}
-          color='#000'>
+        <Text font="Regular" size={14} color="#000">
           {message}
         </Text>
         <Block style={styles.timeView} flex="disabled" mt={3}>
           {isSending ? (
-            <>{/* // <CommonIcon.Pending width={10} height={10} /> */}</>
+            <></>
           ) : isError ? (
-            <Text
-              font="Regular"
-              size={13}
-              color='red'
-              left>
+            <Text font="Regular" size={13} color="red" left>
               Not Delivered
             </Text>
           ) : (
-            <Text
-              font="Regular"
-              size={16}
-              color='#666'
-              left>
+            <Text font="Regular" size={14} color="#666" left>
               {timeAgo(timeStamp && parseInt(timeStamp) * 1000)}
             </Text>
           )}

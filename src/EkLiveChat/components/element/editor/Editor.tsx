@@ -5,11 +5,45 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, Block} from '..';
 import {btnBg, btnImg, file, send} from '../../../../assets';
 
-const Editor = () => {
+interface Props {
+  handleSendMsg?: any;
+}
+
+const Editor: React.FC<Props> = ({handleSendMsg}) => {
+  const [message, setMessage] = useState('');
+
+  const handleSend = () => {
+    if (message) {
+      handleSendMsg({
+        channelID: 'fd0caaa3-f1cb-4d0a-a452-171f21ec16ee'+ Math.random(),
+        chatMessage: {
+          chatSide: 'incoming',
+          displayType: 'text',
+          message: message,
+        },
+        destinationInfo: {
+          entityType: 'chatServer',
+          userInfo: null,
+        },
+        instanceId: '080fe801-bb89-4331-95bf-5bc4e73525b8',
+        messageId: '73d2454d-0b73-4937-ba8b-d2b20b7172d7',
+        sourceInfo: {
+          entityType: 'client',
+          userInfo: {
+            ipAddress: '202.51.80.194',
+            user_name: null,
+            usernameCookie: 'f03be31a66f5',
+          },
+        },
+      });
+      setMessage('')
+    }
+  };
+
   return (
     <Block
       flex="disabled"
@@ -25,14 +59,18 @@ const Editor = () => {
       <Block style={styles.container}>
         <TextInput
           placeholder="Message..."
-          // onChangeText={(text: string) => setMessage(text)}
-          // value={message}
+          onChangeText={(text: string) => setMessage(text)}
+          // onChangeText={handleSendMsg}
+          value={message}
           style={styles.input}
           placeholderTextColor="#6D6E7A"
           multiline
         />
       </Block>
-      <TouchableOpacity activeOpacity={0.7} style={styles.sendBtn}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.sendBtn}
+        onPress={handleSend}>
         <Image source={btnImg} style={styles.sendBtnImg} />
       </TouchableOpacity>
     </Block>
