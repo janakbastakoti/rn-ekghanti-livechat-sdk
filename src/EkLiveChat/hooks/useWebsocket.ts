@@ -1,16 +1,16 @@
-import {useState, useEffect, useRef} from 'react';
-import {appendChatMsg} from '../helper';
+import {useState, useEffect} from 'react';
 
 const useWebSocket = (
   channelId: string,
   chatInstanceId: any,
   setChatInstanceId: any,
+  chatData: any,
+  setChatData: any,
+  usernameCookie: any,
+  setUsernameCookie: any,
 ) => {
-  const [chatData, setChatData] = useState<any>([]);
   const [socket, setSocket] = useState<any>();
   const [isConnected, setIsConnected] = useState(false);
-  //   const websocketRef = useRef<WebSocket>(null);
-
   const socketConnection = () => {
     // const websocket = new WebSocket('ws://192.168.86.115:8080');
     const websocket = new WebSocket(`wss://chat.orbit360.cx:8443/`);
@@ -35,10 +35,9 @@ const useWebSocket = (
 
     websocket.onmessage = event => {
       let temp = JSON.parse(event?.data);
-      console.log('message received------====', temp?.messageId);
       setChatInstanceId(temp?.instanceId);
-
-      setChatData(appendChatMsg(temp, [...chatData]));
+      setUsernameCookie(temp?.destinationInfo?.userInfo?.usernameCookie);
+      setChatData((prevList: any) => [...prevList, temp]);
     };
   };
 
@@ -52,7 +51,7 @@ const useWebSocket = (
     }
   };
 
-  return {sendMessage, chatData, setChatData};
+  return {sendMessage, chatData, setChatData, usernameCookie};
 };
 
 export default useWebSocket;

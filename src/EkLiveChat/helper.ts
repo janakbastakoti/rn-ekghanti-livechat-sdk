@@ -29,6 +29,5 @@ export const appendChatMsg = (msgObj: any, chatData: any) => {
   // If channelId does not exist, append the object to the list
   // if (!exists) return [...chatData, msgObj];
   // else chatData;
-  // console.log('&&&&&&', [...chatData, msgObj])
   return [...chatData, msgObj]
 };

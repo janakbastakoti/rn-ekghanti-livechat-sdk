@@ -12,7 +12,6 @@ import React, {useState} from 'react';
 import {Block, Editor, Header} from './components/element';
 import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
-import useSocket from './hooks/useSocket';
 import {appendChatMsg} from './helper';
 import useWebSocket from './hooks/useWebsocket';
 
@@ -22,18 +21,54 @@ type Props = {
 
 const EkLiveChat: React.FC<Props> = ({channelId}) => {
   const [chatInstanceId, setChatInstanceId] = useState(null);
-  const {sendMessage, chatData, setChatData} = useWebSocket(
+  const [chatData, setChatData] = useState<any>([]);
+  const [usernameCookie, setUsernameCookie] = useState(null);
+  const {sendMessage} = useWebSocket(
     channelId,
     chatInstanceId,
     setChatInstanceId,
+    chatData,
+    setChatData,
+    usernameCookie,
+    setUsernameCookie,
   );
-  // const { } = useWebSocket();
-  // const {height} = Dimensions.get('window');
-
-  // console.log(chatData, '************');
-
-  const handleSendMsg = (msgObj: any) => {
-    setChatData(appendChatMsg(msgObj, [...chatData]));
+  const handleSendMsg = (message: any) => {
+    sendMessage({
+      firstMsg: message,
+      usernameCookie: usernameCookie,
+      message: message,
+      chatInstanceId: chatInstanceId,
+      channelID: channelId,
+      type: 'text',
+    });
+    setChatData(
+      appendChatMsg(
+        {
+          channelID: channelId,
+          chatMessage: {
+            chatSide: 'incomming',
+            displayType: 'text',
+            message: message,
+          },
+          destinationInfo: {
+            entityType: 'chatServer',
+            userInfo: null,
+          },
+          instanceId: chatInstanceId,
+          messageId: chatInstanceId || '' + Math.random(),
+          sourceInfo: {
+            entityType: 'client',
+            userInfo: {
+              ipAddress: '202.51.80.194',
+              user_name: null,
+              usernameCookie: usernameCookie,
+            },
+          },
+          timestamp: new Date().getTime() / 1000,
+        },
+        [...chatData],
+      ),
+    );
   };
 
   return (
@@ -47,8 +82,8 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
             title="Click me"
             onPress={() => {
               const msg = {
-                firstMsg: 'null',
-                usernameCookie: 'bb0dd1faa575',
+                firstMsg: 'client',
+                usernameCookie: usernameCookie,
                 message: 'Click Me',
                 chatInstanceId: chatInstanceId,
                 channelID: channelId,
@@ -65,17 +100,17 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
             showsVerticalScrollIndicator={false}
             renderItem={({item}: {item: any}) => (
               <Block>
-                {item?.chatMessage?.chatSide == 'incomming' ? (
+                {item?.chatMessage?.chatSide == 'outgoing' ? (
                   <OtherMessage
-                    message="from chat messsage"
-                    timeStamp="1722736037"
+                    message={item?.message || item?.chatMessage?.message}
+                    timeStamp={item?.timestamp}
                   />
                 ) : (
                   <MyMessage
                     message={item?.message || item?.chatMessage?.message}
                     isSending={false}
                     isError={false}
-                    timeStamp="1722736037"
+                    timeStamp={item?.timestamp}
                   />
                 )}
               </Block>
