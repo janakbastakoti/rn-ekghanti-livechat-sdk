@@ -1,14 +1,11 @@
 import {
   Button,
-  Dimensions,
   FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
-  View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Block, Editor, Header} from './components/element';
 import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
@@ -20,6 +17,7 @@ type Props = {
 };
 
 const EkLiveChat: React.FC<Props> = ({channelId}) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const [chatInstanceId, setChatInstanceId] = useState(null);
   const [chatData, setChatData] = useState<any>([]);
   const [usernameCookie, setUsernameCookie] = useState(null);
@@ -71,6 +69,13 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
     );
   };
 
+  console.log('xyz::::000000')
+  useEffect(() => {
+    if (chatData?.length) {
+      scrollViewRef.current?.scrollToEnd({animated: true});
+    }
+  }, [chatData]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Block flex="disabled">
@@ -96,8 +101,12 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
         <Block ph={20} pt={10}>
           <FlatList
             // data={[]}
+            ref={scrollViewRef}
             data={chatData}
             showsVerticalScrollIndicator={false}
+            onContentSizeChange={() =>
+              scrollViewRef.current?.scrollToEnd({animated: true})
+            }
             renderItem={({item}: {item: any}) => (
               <Block>
                 {item?.chatMessage?.chatSide == 'outgoing' ? (
