@@ -8,6 +8,8 @@ interface Props {
   isSending?: boolean;
   isError?: boolean;
   timeStamp?: any;
+  displayType?: string;
+  fileName?: string;
 }
 
 const MyMessage: React.FC<Props> = ({
@@ -15,13 +17,19 @@ const MyMessage: React.FC<Props> = ({
   isSending,
   isError,
   timeStamp,
+  displayType,
+  fileName,
 }) => {
   return (
     <Block style={styles.msgContainer} flex="disabled" row gap={5}>
       <Block style={styles.msgContent} flex="disabled">
-        <Text font="Regular" size={14} color="#000">
-          {message}
-        </Text>
+        {displayType == 'image' ? (
+          <Image source={{uri: fileName}} style={styles.imgStyle} />
+        ) : (
+          <Text font="Regular" size={14} color="#000">
+            {message}
+          </Text>
+        )}
         <Block style={styles.timeView} flex="disabled" mt={3}>
           {isSending ? (
             <></>
@@ -66,5 +74,10 @@ const styles = StyleSheet.create({
   timeView: {
     alignItems: 'flex-end',
     height: 14,
+  },
+  imgStyle: {
+    height: 130,
+    width: 200,
+    borderRadius: 5,
   },
 });

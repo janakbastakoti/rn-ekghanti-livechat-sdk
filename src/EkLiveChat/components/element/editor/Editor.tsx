@@ -35,9 +35,14 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
   // console.log(result?.uri);
 
   const handleSend = () => {
-    if (message) {
-      handleSendMsg(message);
+    if (message || result[0].uri) {
+      handleSendMsg({
+        message: message,
+        url: result ? result[0].uri : null,
+        type: result ? 'image' : 'text',
+      });
       setMessage('');
+      setResult(null);
     }
   };
 

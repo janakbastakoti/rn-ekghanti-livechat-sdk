@@ -8,15 +8,27 @@ interface Props {
   userName?: string;
   userProfile?: string;
   timeStamp?: string;
+  displayType?: string;
+  fileName?: string;
 }
 
-const OtherMessage: React.FC<Props> = ({message, userProfile, timeStamp}) => {
+const OtherMessage: React.FC<Props> = ({
+  message,
+  userProfile,
+  timeStamp,
+  displayType,
+  fileName,
+}) => {
   return (
     <Block style={styles.msgContainer} flex="disabled" row gap={5}>
       <Block style={styles.msgContent} flex="disabled">
-        <Text font="Regular" size={16} color="#fff">
-          {message}
-        </Text>
+        {displayType == 'image' ? (
+          <Image src={fileName} style={styles.imgStyle} />
+        ) : (
+          <Text font="Regular" size={16} color="#fff">
+            {message}
+          </Text>
+        )}
         <Block style={styles.timeView} flex="disabled" mt={3}>
           <Text font="Regular" size={13} color="#fff" left>
             {timeAgo(timeStamp && parseInt(timeStamp) * 1000)}
@@ -50,5 +62,10 @@ const styles = StyleSheet.create({
   },
   timeView: {
     alignItems: 'flex-start',
+  },
+  imgStyle: {
+    height: 130,
+    width: 200,
+    borderRadius: 5,
   },
 });

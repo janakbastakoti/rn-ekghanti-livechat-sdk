@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+const imageBase64 = 'data:image/png;base64,iVBORw0K...';
 
 const useWebSocket = (
   channelId: string,
@@ -43,6 +44,7 @@ const useWebSocket = (
 
   const sendMessage = (msg: any) => {
     if (socket) {
+      // socket?.send(imageBase64, chatInstanceId, usernameCookie, 'image');
       socket?.send(JSON.stringify(msg));
     }
   };

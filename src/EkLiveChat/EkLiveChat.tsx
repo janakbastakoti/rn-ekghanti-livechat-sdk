@@ -11,21 +11,24 @@ import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
 import {appendChatMsg} from './helper';
 import useWebSocket from './hooks/useWebsocket';
-import { DirectoryPickerResponse, DocumentPickerResponse } from 'react-native-document-picker';
+import {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+} from 'react-native-document-picker';
 
 type Props = {
   channelId: string;
 };
 
 const EkLiveChat: React.FC<Props> = ({channelId}) => {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<FlatList>(null);
   const [result, setResult] = React.useState<
-  | Array<DocumentPickerResponse>
-  | DirectoryPickerResponse
-  | undefined
-  | null
-  | any
->();
+    | Array<DocumentPickerResponse>
+    | DirectoryPickerResponse
+    | undefined
+    | null
+    | any
+  >();
   const [chatInstanceId, setChatInstanceId] = useState(null);
   const [chatData, setChatData] = useState<any>([]);
   const [usernameCookie, setUsernameCookie] = useState(null);
@@ -39,42 +42,75 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
     setUsernameCookie,
   );
   const handleSendMsg = (message: any) => {
-    sendMessage({
-      firstMsg: message,
-      usernameCookie: usernameCookie,
-      message: message,
-      chatInstanceId: chatInstanceId,
-      channelID: channelId,
-      type: 'text',
-    });
-    setChatData(
-      appendChatMsg(
-        {
-          channelID: channelId,
-          chatMessage: {
-            chatSide: 'incomming',
-            displayType: 'text',
-            message: message,
-          },
-          destinationInfo: {
-            entityType: 'chatServer',
-            userInfo: null,
-          },
-          instanceId: chatInstanceId,
-          messageId: chatInstanceId || '' + Math.random(),
-          sourceInfo: {
-            entityType: 'client',
-            userInfo: {
-              ipAddress: '202.51.80.194',
-              user_name: null,
-              usernameCookie: usernameCookie,
+    console.log(message);
+    if (message?.type == 'text') {
+      sendMessage({
+        firstMsg: message?.message,
+        usernameCookie: usernameCookie,
+        message: message?.message,
+        chatInstanceId: chatInstanceId,
+        channelID: channelId,
+        type: 'text',
+      });
+      setChatData(
+        appendChatMsg(
+          {
+            channelID: channelId,
+            chatMessage: {
+              chatSide: 'incomming',
+              displayType: 'text',
+              message: message?.message,
             },
+            destinationInfo: {
+              entityType: 'chatServer',
+              userInfo: null,
+            },
+            instanceId: chatInstanceId,
+            messageId: chatInstanceId || '' + Math.random(),
+            sourceInfo: {
+              entityType: 'client',
+              userInfo: {
+                ipAddress: '202.51.80.194',
+                user_name: null,
+                usernameCookie: usernameCookie,
+              },
+            },
+            timestamp: new Date().getTime() / 1000,
           },
-          timestamp: new Date().getTime() / 1000,
-        },
-        [...chatData],
-      ),
-    );
+          [...chatData],
+        ),
+      );
+    } else {
+      setChatData(
+        appendChatMsg(
+          {
+            channelID: channelId,
+            chatMessage: {
+              chatSide: 'incomming',
+              displayType: 'image',
+              message:'',
+              filteName: message?.url
+            },
+            destinationInfo: {
+              entityType: 'chatServer',
+              userInfo: null,
+            },
+            instanceId: chatInstanceId,
+            messageId: chatInstanceId || '' + Math.random(),
+            sourceInfo: {
+              entityType: 'client',
+              userInfo: {
+                ipAddress: '202.51.80.194',
+                user_name: null,
+                usernameCookie: usernameCookie,
+              },
+            },
+            timestamp: new Date().getTime() / 1000,
+          },
+          [...chatData],
+        ),
+      );
+    }
   };
 
   useEffect(() => {
@@ -120,6 +156,8 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
                   <OtherMessage
                     message={item?.message || item?.chatMessage?.message}
                     timeStamp={item?.timestamp}
+                    displayType={item?.chatMessage?.displayType}
+                    fileName={item?.chatMessage?.filteName}
                   />
                 ) : (
                   <MyMessage
@@ -127,6 +165,8 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
                     isSending={false}
                     isError={false}
                     timeStamp={item?.timestamp}
+                    displayType={item?.chatMessage?.displayType}
+                    fileName={item?.chatMessage?.filteName}
                   />
                 )}
               </Block>
@@ -144,8 +184,7 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
           />
         </Block>
       </Block>
-      <Editor handleSendMsg={handleSendMsg} 
-      />
+      <Editor handleSendMsg={handleSendMsg} />
     </SafeAreaView>
   );
 };
