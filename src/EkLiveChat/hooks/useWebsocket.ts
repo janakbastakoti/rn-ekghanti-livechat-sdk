@@ -10,15 +10,13 @@ const useWebSocket = (
   setUsernameCookie: any,
 ) => {
   const [socket, setSocket] = useState<any>();
-  const [isConnected, setIsConnected] = useState(false);
+  // const [isConnected, setIsConnected] = useState(false);
   const socketConnection = () => {
     // const websocket = new WebSocket('ws://192.168.86.115:8080');
     const websocket = new WebSocket(`wss://chat.orbit360.cx:8443/`);
-    // const websocket = new WebSocket('ws://192.168.86.115:8080');
     setSocket(websocket);
     websocket.onopen = () => {
       console.log('connected');
-      setIsConnected(true);
       var msg = {
         firstMsg: 'client',
         usernameCookie: '',
@@ -29,9 +27,7 @@ const useWebSocket = (
       websocket.send(JSON.stringify(msg));
     };
 
-    websocket.onclose = () => {
-      setIsConnected(false);
-    };
+    websocket.onclose = () => {};
 
     websocket.onmessage = event => {
       let temp = JSON.parse(event?.data);
