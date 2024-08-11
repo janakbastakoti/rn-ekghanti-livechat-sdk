@@ -8,6 +8,14 @@ import {
 import React, {useState} from 'react';
 import {Text, Block} from '..';
 import {btnBg, btnImg, file, send} from '../../../../assets';
+import CustomImage from './CustomImage';
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  isCancel,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
 
 interface Props {
   handleSendMsg?: any;
@@ -16,6 +24,16 @@ interface Props {
 const Editor: React.FC<Props> = ({handleSendMsg}) => {
   const [message, setMessage] = useState('');
 
+  const [result, setResult] = React.useState<
+    | Array<DocumentPickerResponse>
+    | DirectoryPickerResponse
+    | undefined
+    | null
+    | any
+  >();
+
+  // console.log(result?.uri);
+
   const handleSend = () => {
     if (message) {
       handleSendMsg(message);
@@ -23,35 +41,65 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
     }
   };
 
-  return (
-    <Block
-      flex="disabled"
-      style={styles.editorContainer}
-      ph={15}
-      pv={9}
-      row
-      center>
-      <TouchableOpacity style={styles.fileBtn} activeOpacity={0.7}>
-        <Image source={file} style={styles.fileImg} />
-      </TouchableOpacity>
+  const handleError = (err: unknown) => {
+    if (isCancel(err)) {
+      console.warn('cancelled');
+      // User cancelled the picker, exit any dialogs or menus and move on
+    } else if (isInProgress(err)) {
+      console.warn(
+        'multiple pickers were opened, only the last will be considered',
+      );
+    } else {
+      throw err;
+    }
+  };
 
-      <Block style={styles.container}>
-        <TextInput
-          placeholder="Message..."
-          onChangeText={(text: string) => setMessage(text)}
-          // onChangeText={handleSendMsg}
-          value={message}
-          style={styles.input}
-          placeholderTextColor="#6D6E7A"
-          multiline
-        />
+  return (
+    <Block flex="disabled">
+      {result && (
+        <Block flex="disabled" row ph={20}>
+          <CustomImage img={result[0].uri} />
+        </Block>
+      )}
+      <Block
+        flex="disabled"
+        style={styles.editorContainer}
+        ph={15}
+        pv={9}
+        row
+        center>
+        <TouchableOpacity
+          style={styles.fileBtn}
+          activeOpacity={0.7}
+          onPress={() => {
+            DocumentPicker.pick({
+              allowMultiSelection: false,
+              type: [types.images],
+            })
+              .then(setResult)
+              .catch(handleError);
+          }}>
+          <Image source={file} style={styles.fileImg} />
+        </TouchableOpacity>
+
+        <Block style={styles.container}>
+          <TextInput
+            placeholder="Message..."
+            onChangeText={(text: string) => setMessage(text)}
+            // onChangeText={handleSendMsg}
+            value={message}
+            style={styles.input}
+            placeholderTextColor="#6D6E7A"
+            multiline
+          />
+        </Block>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.sendBtn}
+          onPress={handleSend}>
+          <Image source={btnImg} style={styles.sendBtnImg} />
+        </TouchableOpacity>
       </Block>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={styles.sendBtn}
-        onPress={handleSend}>
-        <Image source={btnImg} style={styles.sendBtnImg} />
-      </TouchableOpacity>
     </Block>
   );
 };
