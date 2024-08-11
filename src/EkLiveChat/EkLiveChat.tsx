@@ -42,7 +42,6 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
     setUsernameCookie,
   );
   const handleSendMsg = (message: any) => {
-    console.log(message);
     if (message?.type == 'text') {
       sendMessage({
         firstMsg: message?.message,
@@ -81,6 +80,14 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
         ),
       );
     } else {
+      sendMessage({
+        firstMsg: message?.url,
+        usernameCookie: usernameCookie,
+        message: message?.url,
+        chatInstanceId: chatInstanceId,
+        channelID: channelId,
+        type: 'image',
+      });
       setChatData(
         appendChatMsg(
           {
@@ -110,6 +117,8 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
           [...chatData],
         ),
       );
+      
+
     }
   };
 

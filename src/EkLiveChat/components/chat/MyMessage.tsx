@@ -24,7 +24,7 @@ const MyMessage: React.FC<Props> = ({
     <Block style={styles.msgContainer} flex="disabled" row gap={5}>
       <Block style={styles.msgContent} flex="disabled">
         {displayType == 'image' ? (
-          <Image source={{uri: fileName}} style={styles.imgStyle} />
+          <Image src={fileName} style={styles.imgStyle} />
         ) : (
           <Text font="Regular" size={14} color="#000">
             {message}

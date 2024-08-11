@@ -22,7 +22,9 @@ interface Props {
 }
 
 const Editor: React.FC<Props> = ({handleSendMsg}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [uploadedUrl, setUploadedUrl] = useState<string>();
 
   const [result, setResult] = React.useState<
     | Array<DocumentPickerResponse>
@@ -32,13 +34,39 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
     | any
   >();
 
-  // console.log(result?.uri);
+  console.log(result);
+
+  const uploadImage = (image_data: any) => {
+    setIsLoading(true);
+    var formData = new FormData();
+    formData.append('sending_file', {
+      name: image_data[0]?.name,
+      type: image_data[0]?.type,
+      uri: image_data[0]?.uri,
+    });
+
+    fetch('https://chat.orbit360.cx:8443/uploadImage', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.text())
+      .then(filePath => {
+        setIsLoading(false);
+        console.log('file', filePath);
+        setUploadedUrl(filePath);
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.error('Error uploading file:', error);
+        // Handle error as needed
+      });
+  };
 
   const handleSend = () => {
     if (message || result[0].uri) {
       handleSendMsg({
         message: message,
-        url: result ? result[0].uri : null,
+        url: uploadedUrl ? uploadedUrl : null,
         type: result ? 'image' : 'text',
       });
       setMessage('');
@@ -63,7 +91,7 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
     <Block flex="disabled">
       {result && (
         <Block flex="disabled" row ph={20}>
-          <CustomImage img={result[0].uri} />
+          <CustomImage img={result[0].uri} loading={isLoading} />
         </Block>
       )}
       <Block
@@ -81,7 +109,10 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
               allowMultiSelection: false,
               type: [types.images],
             })
-              .then(setResult)
+              .then((data: any) => {
+                uploadImage(data);
+                setResult(data);
+              })
               .catch(handleError);
           }}>
           <Image source={file} style={styles.fileImg} />
