@@ -25,6 +25,7 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [uploadedUrl, setUploadedUrl] = useState<string>();
+  const [error, setError] = useState(false);
 
   const [result, setResult] = React.useState<
     | Array<DocumentPickerResponse>
@@ -38,6 +39,7 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
 
   const uploadImage = (image_data: any) => {
     setIsLoading(true);
+    setError(false);
     var formData = new FormData();
     formData.append('sending_file', {
       name: image_data[0]?.name,
@@ -52,13 +54,13 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
       .then(response => response.text())
       .then(filePath => {
         setIsLoading(false);
-        console.log('file', filePath);
-        setUploadedUrl(filePath);
+        if (filePath?.startsWith('https://chat')) setUploadedUrl(filePath);
+        else setError(true);
       })
       .catch(error => {
         setIsLoading(false);
+        setError(true);
         console.error('Error uploading file:', error);
-        // Handle error as needed
       });
   };
 
@@ -91,7 +93,14 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
     <Block flex="disabled">
       {result && (
         <Block flex="disabled" row ph={20}>
-          <CustomImage img={result[0].uri} loading={isLoading} />
+          <CustomImage
+            img={result[0].uri}
+            loading={isLoading}
+            error={error}
+            onError={() => {
+              uploadImage(result);
+            }}
+          />
         </Block>
       )}
       <Block
@@ -132,7 +141,8 @@ const Editor: React.FC<Props> = ({handleSendMsg}) => {
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.sendBtn}
-          onPress={handleSend}>
+          onPress={handleSend}
+          disabled={isLoading || error}>
           <Image source={btnImg} style={styles.sendBtnImg} />
         </TouchableOpacity>
       </Block>

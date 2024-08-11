@@ -4,7 +4,8 @@ import send from './send.png';
 import file from './file.png';
 import btnBg from './btnBg.png';
 import btnImg from './btnImg.png';
+import reloadIcon from './reloadIcon.png';
 
 
 
-export { logo, bg, file, send, btnBg, btnImg}
+export { logo, bg, file, send, btnBg, btnImg, reloadIcon}

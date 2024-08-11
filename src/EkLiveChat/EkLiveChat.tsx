@@ -11,10 +11,6 @@ import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
 import {appendChatMsg} from './helper';
 import useWebSocket from './hooks/useWebsocket';
-import {
-  DirectoryPickerResponse,
-  DocumentPickerResponse,
-} from 'react-native-document-picker';
 
 type Props = {
   channelId: string;
@@ -22,13 +18,6 @@ type Props = {
 
 const EkLiveChat: React.FC<Props> = ({channelId}) => {
   const scrollViewRef = useRef<FlatList>(null);
-  const [result, setResult] = React.useState<
-    | Array<DocumentPickerResponse>
-    | DirectoryPickerResponse
-    | undefined
-    | null
-    | any
-  >();
   const [chatInstanceId, setChatInstanceId] = useState(null);
   const [chatData, setChatData] = useState<any>([]);
   const [usernameCookie, setUsernameCookie] = useState(null);
@@ -95,8 +84,8 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
             chatMessage: {
               chatSide: 'incomming',
               displayType: 'image',
-              message:'',
-              filteName: message?.url
+              message: '',
+              filteName: message?.url,
             },
             destinationInfo: {
               entityType: 'chatServer',
@@ -117,8 +106,6 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
           [...chatData],
         ),
       );
-      
-
     }
   };
 
@@ -182,14 +169,6 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
             )}
             keyExtractor={(item: any, index: any) => index.toString()}
             ListFooterComponent={<Block style={{height: 8}} />}
-            // ListEmptyComponent={<Block style={{height: 8}}/>}
-            // refreshControl={
-            //   <RefreshControl
-            //     colors={[theme.colors.primaryTextColor]}
-            //     refreshing={isFetching}
-            //     onRefresh={refetch}
-            //   />
-            // }
           />
         </Block>
       </Block>
