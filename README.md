@@ -9,10 +9,15 @@ To install the package, you can use npm:
 ```bash
 npm install rn-ekghanti-livechat-sdk
 
+```
 
+## Usage
 
-To use livechat using component
+### API documentation
 
+### To use livechat using component
+
+```js
 import {View} from 'react-native';
 import React from 'react';
 import {EkLiveChat} from 'rn-ekghanti-livechat-sdk';
@@ -27,8 +32,11 @@ const App = () => {
 
 export default App;
 
-To use livechat using web view
+```
 
+### To use livechat using web view
+
+```js
 import {View} from 'react-native';
 import React from 'react';
 import {LiveChat} from 'rn-ekghanti-livechat-sdk';
