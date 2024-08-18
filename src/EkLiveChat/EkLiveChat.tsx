@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   SafeAreaView,
@@ -11,6 +12,7 @@ import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
 import {appendChatMsg} from './helper';
 import useWebSocket from './hooks/useWebsocket';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   channelId: string;
@@ -18,10 +20,11 @@ type Props = {
 
 const EkLiveChat: React.FC<Props> = ({channelId}) => {
   const scrollViewRef = useRef<FlatList>(null);
-  const [chatInstanceId, setChatInstanceId] = useState(null);
+  const [chatInstanceId, setChatInstanceId] = useState<any>(null);
+
   const [chatData, setChatData] = useState<any>([]);
   const [usernameCookie, setUsernameCookie] = useState(null);
-  const {sendMessage} = useWebSocket(
+  const {sendMessage, isLoading} = useWebSocket(
     channelId,
     chatInstanceId,
     setChatInstanceId,
@@ -120,59 +123,67 @@ const EkLiveChat: React.FC<Props> = ({channelId}) => {
       <Block flex="disabled">
         <Header />
       </Block>
-      <Block>
-        <Block flex="disabled" ph={20} pt={5}>
-          <Button
-            title="Click me"
-            onPress={() => {
-              const msg = {
-                firstMsg: 'client',
-                usernameCookie: usernameCookie,
-                message: 'Click Me',
-                chatInstanceId: chatInstanceId,
-                channelID: channelId,
-                type: 'text',
-              };
-              sendMessage(msg);
-            }}
-          />
+      {isLoading ? (
+        <Block center middle>
+          <ActivityIndicator size="large" color="#ff2200" />
         </Block>
-        <Block ph={20} pt={10}>
-          <FlatList
-            // data={[]}
-            ref={scrollViewRef}
-            data={chatData}
-            showsVerticalScrollIndicator={false}
-            onContentSizeChange={() =>
-              scrollViewRef.current?.scrollToEnd({animated: true})
-            }
-            renderItem={({item}: {item: any}) => (
-              <Block>
-                {item?.chatMessage?.chatSide == 'outgoing' ? (
-                  <OtherMessage
-                    message={item?.message || item?.chatMessage?.message}
-                    timeStamp={item?.timestamp}
-                    displayType={item?.chatMessage?.displayType}
-                    fileName={item?.chatMessage?.filteName}
-                  />
-                ) : (
-                  <MyMessage
-                    message={item?.message || item?.chatMessage?.message}
-                    isSending={false}
-                    isError={false}
-                    timeStamp={item?.timestamp}
-                    displayType={item?.chatMessage?.displayType}
-                    fileName={item?.chatMessage?.filteName}
-                  />
+      ) : (
+        <>
+          <Block>
+            <Block flex="disabled" ph={20} pt={5}>
+              <Button
+                title="Click me"
+                onPress={() => {
+                  const msg = {
+                    firstMsg: 'client',
+                    usernameCookie: usernameCookie,
+                    message: 'Click Me',
+                    chatInstanceId: chatInstanceId,
+                    channelID: channelId,
+                    type: 'text',
+                  };
+                  sendMessage(msg);
+                }}
+              />
+            </Block>
+            <Block ph={20} pt={10}>
+              <FlatList
+                // data={[]}
+                ref={scrollViewRef}
+                data={chatData}
+                showsVerticalScrollIndicator={false}
+                onContentSizeChange={() =>
+                  scrollViewRef.current?.scrollToEnd({animated: true})
+                }
+                renderItem={({item}: {item: any}) => (
+                  <Block>
+                    {item?.chatMessage?.chatSide == 'outgoing' ? (
+                      <OtherMessage
+                        message={item?.message || item?.chatMessage?.message}
+                        timeStamp={item?.timestamp}
+                        displayType={item?.chatMessage?.displayType}
+                        fileName={item?.chatMessage?.filteName}
+                      />
+                    ) : (
+                      <MyMessage
+                        message={item?.message || item?.chatMessage?.message}
+                        isSending={false}
+                        isError={false}
+                        timeStamp={item?.timestamp}
+                        displayType={item?.chatMessage?.displayType}
+                        fileName={item?.chatMessage?.filteName}
+                      />
+                    )}
+                  </Block>
                 )}
-              </Block>
-            )}
-            keyExtractor={(item: any, index: any) => index.toString()}
-            ListFooterComponent={<Block style={{height: 8}} />}
-          />
-        </Block>
-      </Block>
-      <Editor handleSendMsg={handleSendMsg} />
+                keyExtractor={(item: any, index: any) => index.toString()}
+                ListFooterComponent={<Block style={{height: 8}} />}
+              />
+            </Block>
+          </Block>
+          <Editor handleSendMsg={handleSendMsg} />
+        </>
+      )}
     </SafeAreaView>
   );
 };
