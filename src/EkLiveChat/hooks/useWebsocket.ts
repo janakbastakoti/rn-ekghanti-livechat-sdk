@@ -21,7 +21,7 @@ const useWebSocket = (
     setSocket(websocket);
     websocket.onopen = () => {
       console.log('connected');
-      if (!chatInstanceId) {
+      // if (!chatInstanceId) {
         var msg = {
           firstMsg: 'client',
           usernameCookie: '',
@@ -30,7 +30,7 @@ const useWebSocket = (
           channelID: channelId,
         };
         websocket.send(JSON.stringify(msg));
-      }
+      // }
     };
 
     websocket.onclose = () => {};
@@ -78,7 +78,6 @@ const useWebSocket = (
       if (state !== null) {
         console.log(state);
         fetchHistory(JSON.parse(state));
-
         // let temp = JSON.parse(state);
       } else setisLoading(false);
     } catch (e) {
@@ -87,15 +86,15 @@ const useWebSocket = (
     }
   };
 
-  // useEffect(() => {
-  //   // if (!chatInstanceId) {
-  //   getStoreInstanceId();
-  //   // }
-  // }, []);
-
   useEffect(() => {
-    socketConnection();
+    // if (!chatInstanceId) {
+    getStoreInstanceId();
+    // }else 
   }, []);
+
+  // useEffect(() => {
+  //   socketConnection();
+  // }, []);
 
   const sendMessage = (msg: any) => {
     if (socket) {
