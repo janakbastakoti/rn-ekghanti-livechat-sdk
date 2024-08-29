@@ -1,8 +1,6 @@
 import {useState, useEffect} from 'react';
 import LocalDb from '../../LocalDb';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import LocalDb from '../../LocalDb';
-const imageBase64 = 'data:image/png;base64,iVBORw0K...';
 
 const useWebSocket = (
   channelId: string,
@@ -21,7 +19,7 @@ const useWebSocket = (
     setSocket(websocket);
     websocket.onopen = () => {
       console.log('connected');
-      // if (!chatInstanceId) {
+      if (!chatInstanceId) {
         var msg = {
           firstMsg: 'client',
           usernameCookie: '',
@@ -30,7 +28,7 @@ const useWebSocket = (
           channelID: channelId,
         };
         websocket.send(JSON.stringify(msg));
-      // }
+      }
     };
 
     websocket.onclose = () => {};
@@ -46,7 +44,6 @@ const useWebSocket = (
   };
 
   const fetchHistory = (id: string) => {
-    setChatInstanceId(id);
     fetch(`https://chat.orbit360.cx:8443/chatStorageWhook/${id}`)
       .then(response => {
         if (!response.ok) {
@@ -76,10 +73,16 @@ const useWebSocket = (
     try {
       const state = await AsyncStorage.getItem('instanceId');
       if (state !== null) {
-        console.log(state);
+        // console.log(state, 'dhdhdhhdhd');
+        setChatInstanceId(JSON.parse(state));
         fetchHistory(JSON.parse(state));
+
         // let temp = JSON.parse(state);
-      } else setisLoading(false);
+      } else {
+        socketConnection();
+        console.log('xyz::: not found 000dduudud');
+        setisLoading(false);
+      }
     } catch (e) {
       setisLoading(false);
       socketConnection();
@@ -87,18 +90,12 @@ const useWebSocket = (
   };
 
   useEffect(() => {
-    // if (!chatInstanceId) {
     getStoreInstanceId();
-    // }else 
   }, []);
-
-  // useEffect(() => {
-  //   socketConnection();
-  // }, []);
 
   const sendMessage = (msg: any) => {
     if (socket) {
-      console.log('msg::000000', msg)
+      console.log('msg::000000', msg);
       // socket?.send(imageBase64, chatInstanceId, usernameCookie, 'image');
       socket?.send(JSON.stringify(msg));
     }
