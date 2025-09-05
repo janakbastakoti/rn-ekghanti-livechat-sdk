@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+    BackHandler,
     KeyboardAvoidingView,
     Platform,
     SafeAreaView,
@@ -18,7 +19,12 @@ type ChatMessage = {
   timestamp: string;
 };
 
-const ChatScreen = () => {
+type Props = {
+  onClose?: () => void;
+  onBackToIntro?: () => void;
+};
+
+const ChatScreen: React.FC<Props> = ({ onClose, onBackToIntro }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -48,6 +54,18 @@ const ChatScreen = () => {
   ]);
 
   const scrollViewRef = useRef<ScrollView | null>(null);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      if (onBackToIntro) {
+        onBackToIntro();
+        return true; // consume back press
+      }
+      return false;
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => sub.remove();
+  }, [onBackToIntro]);
 
   const sendMessage = () => {
     if (message.trim()) {
@@ -125,7 +143,7 @@ const ChatScreen = () => {
       >
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity style={styles.backButton} onPress={onBackToIntro} accessibilityLabel="Back to introduction">
             <Text style={styles.backIcon}>←</Text>
           </TouchableOpacity>
           
@@ -143,8 +161,8 @@ const ChatScreen = () => {
           </View>
 
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.actionButton}>
-              <Text style={styles.actionIcon}>⋮</Text>
+            <TouchableOpacity style={styles.actionButton} onPress={onClose} accessibilityLabel="Close">
+              <Text style={styles.actionIcon}>✕</Text>
             </TouchableOpacity>
           </View>
         </View>

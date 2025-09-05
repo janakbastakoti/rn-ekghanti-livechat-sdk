@@ -6,7 +6,12 @@ import {
     View
 } from 'react-native';
 
-const ChatIntroScreen = () => {
+type Props = {
+  onClose?: () => void;
+  onStartChat?: () => void;
+};
+
+const ChatIntroScreen: React.FC<Props> = ({ onClose, onStartChat }) => {
   return (
     <View style={styles.container}>
       
@@ -21,6 +26,10 @@ const ChatIntroScreen = () => {
         <TouchableOpacity style={styles.languageSelector}>
           <Text style={styles.languageText}>English</Text>
           <Text style={styles.dropdownArrow}>▼</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.closeButton} onPress={onClose} accessibilityLabel="Close">
+          <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
       </View>
 
@@ -41,7 +50,7 @@ const ChatIntroScreen = () => {
         </View>
         
         {/* Chat Now Button */}
-        <TouchableOpacity style={styles.chatButton}>
+        <TouchableOpacity style={styles.chatButton} onPress={onStartChat}>
           <Text style={styles.chatButtonText}>Chat Now</Text>
           <Text style={styles.chatButtonArrow}>→</Text>
         </TouchableOpacity>
@@ -91,6 +100,15 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 20,
     backgroundColor: '#ffffff',
+  },
+  closeButton: {
+    marginLeft: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  closeText: {
+    fontSize: 20,
+    color: '#6b7280',
   },
   
   chatBubbleIcon: {
