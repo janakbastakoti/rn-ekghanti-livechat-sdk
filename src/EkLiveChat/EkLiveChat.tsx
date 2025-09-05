@@ -1,18 +1,16 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
   FlatList,
   SafeAreaView,
-  ScrollView,
-  StyleSheet,
+  StyleSheet
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {Block, Editor, Header} from './components/element';
 import MyMessage from './components/chat/MyMessage';
 import OtherMessage from './components/chat/OtherMessage';
-import {appendChatMsg} from './helper';
+import { Block, Editor, Header } from './components/element';
+import { appendChatMsg } from './helper';
 import useWebSocket from './hooks/useWebsocket';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   channelId: string;
