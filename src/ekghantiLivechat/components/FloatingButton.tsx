@@ -1,24 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
-    Animated,
-    Dimensions,
-    Platform,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  Dimensions,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const FloatingChatButton = () => {
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  
+type FloatingChatButtonProps = {
+  onPress?: () => void;
+};
+
+const FloatingChatButton = ({ onPress }: FloatingChatButtonProps) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const bubbleScaleAnim = useRef(new Animated.Value(1)).current;
-  
+
   const messages = [
     "Hi!",
     "How can I help you?"
@@ -73,7 +75,11 @@ const FloatingChatButton = () => {
         duration: 100,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => {
+      if (onPress) {
+        onPress();
+      }
+    });
   };
 
   const renderMessage = (message: any, index: any) => {
