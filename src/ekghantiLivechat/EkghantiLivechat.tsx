@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import FloatingChatButton from './components/FloatingButton';
 
 type Props = {
   // Define your props here
@@ -7,9 +7,9 @@ type Props = {
 
 const EkghantiLivechat: React.FC<Props> = ({  }) => {
   return (
-    <View>
-      
-    </View>
+    <>
+      <FloatingChatButton />
+    </>
   );
 };
 
